@@ -1,0 +1,60 @@
+首先进入到Nginx那个包里
+
+[root@izbp18vj2il5r9jah4nbbcz api]# cd /usr/local/software
+
+[root@izbp18vj2il5r9jah4nbbcz software]# cd nginx ===========进入到Nginx服务器
+[root@izbp18vj2il5r9jah4nbbcz nginx]# ls===查看
+
+
+
+[root@izbp18vj2il5r9jah4nbbcz nginx]# cd conf/============进入nginx里的conf文件
+[root@izbp18vj2il5r9jah4nbbcz conf]# vim nginx.config  =======进入config编辑页面，这里必须写vim nginx.conf，后面的ig不写才能进入编辑页面
+
+
+在编辑页面，用键盘下键往下走，走到http那个节点
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;  // 这个节点
+
+
+然后:
+  sserver {
+        listen       80;
+        server_name  localhost;
+
+        #charset koi8-r;
+
+        #access_log  logs/host.access.log  main;   //走到这里，在location这里配置，
+
+        location / {   //映射到前端资源的，静态文件夹，dist文件夹
+
+
+            root   html;   //将dist前端静态资源文件的目录配置到这里，例如:/usr/local/software/front_end/dist;                                      //html这个不写，删除，将静态资源路径粘贴过来,后面必须加分号
+
+            index  index.html index.htm;
+        }
+
+
+    注意:需要说明的是，在编辑页面，必须点i进行编辑，否则没法输入， 最后:wq保存退出
+
+
+
+
+
+
+[root@izbp18vj2il5r9jah4nbbcz conf]# c ../sbin/ ========退到这个目录
+
+[root@izbp18vj2il5r9jah4nbbcz conf]# ./nginx -s reload  =====重新加载配置文件，回车，文件部署成功
+
+
+
+
+前后端应⽤部署和配置nginx访问
+后端接⼝地址 api.16web.net
+阿⾥云机器：112.74.55.160
+前端接⼝地址 web.16web.net
+阿⾥云机器：112.74.55.160
+注意：配置A记录后不会⽴刻⽣效，且如果⼆次修改存在本地dns缓存，应该清除本地dns缓存，才
+可以访问
+前端配置Nginx

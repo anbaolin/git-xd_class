@@ -1,0 +1,218 @@
+1、进入阿里云服务器里的，softwar文件(这个文件，是我们安装jdk,Msql,和上Nginx服务器的文件夹)
+
+   SpringBoot项⽬部署阿里云服务器,打包上传
+   打包命令，各个系统通用，只要按照
+   mvn install -Dmaven.test.skip=true
+
+
+
+
+2、[root@izbp18vj2il5r9jah4nbbcz ~]# cd /usr/local/software ===Xshell进入software文件夹
+   [root@izbp18vj2il5r9jah4nbbcz software]# ls  === 已经进入到software文件夹，
+    ls这是查看此文件夹是否我们把后端打包好的文件传了进来
+  
+
+
+3、[root@izbp18vj2il5r9jah4nbbcz software]# mkdir api===新建一个目录，目录名字api
+
+
+
+
+4、[root@izbp18vj2il5r9jah4nbbcz software]# mv  online_xdclass-0.0.1-SNAPSHOT.jar api===把打包好的jar包移到api文件目录里去
+    
+
+
+
+5、[root@izbp18vj2il5r9jah4nbbcz software]# cd api=====进入到api文件里
+
+
+
+
+6、[root@izbp18vj2il5r9jah4nbbcz api]# ls===查看api文件
+
+
+
+
+7、[root@izbp18vj2il5r9jah4nbbcz api]# touch application.properties====新建一个配置文件
+
+
+
+
+8、[root@izbp18vj2il5r9jah4nbbcz api]# ls ======查看配置文件,
+   application.properties  online_xdclass-0.0.1-SNAPSHOT.jar：这是配置配置文件
+
+
+
+
+9、[root@izbp18vj2il5r9jah4nbbcz api]# vim application.properties =====编辑配置文件，进入编辑页面
+
+
+
+
+10、修改项目的配置文件，ip改成服务器公网IP， 密码改成我们设置的服务器Msql的密码
+
+
+
+
+11、然后将项目里面的application.properties配置文件整体复制到shell编辑页面，然后点击Esc去掉"插入Insert"，输入:wq保存。
+    保存之后跳转到[root@izbp18vj2il5r9jah4nbbcz api]# 这个页面
+
+
+
+
+12、然后输入cat application.properties ====查看我们配置的文件
+
+这就是我们配置的文件    
+erver.port=8089
+#==============================数据库相关配置========================================
+spring.datasource.driver-class-name =com.mysql.cj.jdbc.Driver
+spring.datasource.url=jdbc:mysql://47.99.181.18:3306/online_xdclass?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&useSSL=false
+spring.datasource.username=root
+spring.datasource.password=Xdclass.net168
+
+#使用阿里巴巴druid数据源，默认使用自带的
+#spring.datasource.type =com.alibaba.druid.pool.DruidDataSource
+#开启控制台打印sql
+mybatis.configuration.log-impl=org.apache.ibatis.logging.stdout.StdOutImpl
+
+# mybatis 下划线转驼峰配置,两者都可以
+#mybatis.configuration.mapUnderscoreToCamelCase=true
+mybatis.configuration.map-underscore-to-camel-case=true
+#配置扫描
+mybatis.mapper-locations=classpath:mapper/*.xml
+#配置xml的结果别名
+mybatis.type-aliases-package=net.xdclass.online_xdclass.model.entity
+
+
+
+
+
+13、[root@izbp18vj2il5r9jah4nbbcz api]# ls  ===================查看api里的jar包
+    application.properties  online_xdclass-0.0.1-SNAPSHOT.jar
+    
+
+14、[root@izbp18vj2il5r9jah4nbbcz api]# ps -ef | grep "java" ==================查看java进程
+      root   17491 17271  0 20:40 pts/2    00:00:00 grep --color=auto java
+
+
+15、[root@izbp18vj2il5r9jah4nbbcz api]# kill -9 这里写进程的号码，例如:16611  ======删掉某一个进程，没有多余进程不能删除，不能删除当前    进程
+
+
+16、[root@izbp18vj2il5r9jah4nbbcz api]# ps -ef | grep "java" ============再次查看多余进程有没有删除
+
+
+17、[root@izbp18vj2il5r9jah4nbbcz api]# ls=========================================再次查看jar包
+     application.properties  nohup.out  online_xdclass-0.0.1-SNAPSHOT.jar
+
+
+
+
+
+18、[root@izbp18vj2il5r9jah4nbbcz api]# java -jar online_xdclass-0.0.1-SNAPSHOT.jar ===启动后端项目，这一步先不走，直接走下边19
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::             (v2.3.0.M4)
+
+2020-11-05 22:23:19.358  INFO 2533 --- [           main] n.x.o.OnlineXdclassApplication           : Starting OnlineXdclassApplication v0.0.1-SNAPSHOT on izbp18vj2il5r9jah4nbbcz with PID 2533 (/usr/local/software/api/online_xdclass-0.0.1-SNAPSHOT.jar started by root in /usr/local/software/api)
+2020-11-05 22:23:19.372  INFO 2533 --- [           main] n.x.o.OnlineXdclassApplication           : No active profile set, falling back to default profiles: default
+
+
+
+
+==========================================================================
+
+19、(这是苹果系统命令)[root@izbp18vj2il5r9jah4nbbcz api]# nohup java -jar -Dspring.config.location=./application.properties online_xdclass-0.0.1-SNAPSHOT.jar  &  =========启动应用指定外部文件，
+[1] 20462
+[root@izbp18vj2il5r9jah4nbbcz api]# nohup: ignoring input and appending output to ‘nohup.out’========nohup:忽略输入并将输出附加到' nohup.out '
+//运行上面的可能会报错，错误，可能你的端口没有改，直接不启用nohup守护进程，运行！查看是哪的问题，我这个是因为端口号没有改，报端口号被占用
+[root@izbp18vj2il5r9jah4nbbcz api]# java -jar -Dspring.config.location=./application.properties online_xdclass-0.0.1-SNAPSHOT.jar====直接运行
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------
+
+
+
+20、[root@izbp18vj2il5r9jah4nbbcz api]# ls=========================================再次查看jar包
+     application.properties  nohup.out  online_xdclass-0.0.1-SNAPSHOT.jar
+
+
+
+21、[root@izbp18vj2il5r9jah4nbbcz api]# tail -f nohup.out  ===查看项目是否部署成功，查看端口
+
+
+
+
+
+22、再次部署一个节点--------------------------------------------------------------------------------------------------------------------
+
+    [root@izbp18vj2il5r9jah4nbbcz software]# cp -r api api2 ====复制一个api 名字叫api2
+
+    [root@izbp18vj2il5r9jah4nbbcz software]# ls ============查看是否复制成功
+    api  api2  jdk1.8  jdk-8u181-linux-x64.tar.gz  mysql57-community-release-el7-10.noarch.rpm  nginx  nginx-1.13.7.tar.gz  sudo
+
+
+
+
+
+23、[root@izbp18vj2il5r9jah4nbbcz software]# cd api2 ===============进入api2
+[root@izbp18vj2il5r9jah4nbbcz api2]# 
+
+
+
+24、[root@izbp18vj2il5r9jah4nbbcz api2]# rm -rf nohup.out===========删掉nohup
+
+
+
+25[root@izbp18vj2il5r9jah4nbbcz api2]# vim application.properties========编辑配置文件，进入编辑页面
+
+  然后，切换到"插入编辑状态"  将端口号改成8088, 然后退出INSERT状态， 输入:wq 回车保存
+
+
+
+26、回到编辑页面后，拷贝 nohup java -jar -Dspring.config.location=./application.properties  online_xdclass-0.0.1-SNAPSHOT.jar &  
+     回车执行下
+
+[1] 4198
+[root@izbp18vj2il5r9jah4nbbcz api2]# nohup: ignoring input and appending output to ‘nohup.out’=====nohup:忽略输入并将输出附加到' nohup.out '
+
+
+27 、[root@izbp18vj2il5r9jah4nbbcz api2]# tail -f nohup.out ======查看是否启动成功
+
+
+
+[root@izbp18vj2il5r9jah4nbbcz api2]# curl 127.0.0.1:8089/api/v1/pub/video/list_banner==========测试是否连接到项目
+curl: (7) Failed connect to 127.0.0.1:8089; Connection refused====报错
+
+解决办法
+在终端输入export -p，如果发现有ftp_proxy、http_proxy、https_proxy这三个东西的话，那么本解决方法就是适用于你！
+继续在终端输入：
+[root@izbp18vj2il5r9jah4nbbcz api2]# export -p
+
+再次输入export -p，如果不再出现上面三样东西就可以了！
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

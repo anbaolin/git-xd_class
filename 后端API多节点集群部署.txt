@@ -1,0 +1,89 @@
+高可用处理后端API多节点集群部署
+简介：讲解springboot应⽤多节点部署和配置nginx访问
+多节点启动 节点1：112.74.55.160:8088 节点2：112.74.55.160:8089
+配置nginx集群访问
+
+
+多节点启动 节点1：112.74.55.160:8088 节点2：112.74.55.160:8089  ======     后端部署的节点
+
+
+
+//配置nginx集群访问
+
+[root@izbp18vj2il5r9jah4nbbcz nginx]# cd conf/============进入nginx里的conf文件
+[root@izbp18vj2il5r9jah4nbbcz conf]# vim nginx.config  =======进入config编辑页面，这里必须写vim nginx.conf，后面的ig不写才能进入编辑页面
+
+//进入编辑页面
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    #log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+    #                  '$status $body_bytes_sent "$http_referer" '
+    #                  '"$http_user_agent" "$http_x_forwarded_for"';
+
+    #access_log  logs/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    #keepalive_timeout  0;
+    keepalive_timeout  65;
+
+    #gzip  on;
+
+    //就在里编辑,加这一句
+    upstream lbs {
+    server 112.74.55.160:8089;   //同一个机房，可以写成内网ip,这里是写的服务器公网ip
+    server 112.74.55.160:8088;   //这两个是我们配置的后端集群节点，和端口号
+    }
+
+
+
+    server {
+        listen       80;
+        server_name  localhost;
+
+        #charset koi8-r;
+
+        #access_log  logs/host.access.log  main;
+
+
+        //在这里配置后端的api,新增一个location，如果匹配api ,他就把路径传递到 upstream lbs ，重定向过去
+          //相当于用户访问域名，我们在把域名解析到了lbs这里ip,刚好映射到这里来，他帮我们转发，转发到上面的lbs
+             //那里，转到到ip+端口
+         location /api/ {   
+         proxy_pass http://lbs;
+         proxy_redirect default;
+       }
+
+
+        location / {
+            root   html;
+            index  index.html index.htm;
+        }
+
+        #error_page  404              /404.html;
+
+        # redirect server error pages to the static page /50x.html
+        #
+                          
+     注意:最后切换到编辑模式， :wq保存，
+
+
+
+
+2、[root@izbp18vj2il5r9jah4nbbcz nginx]# cd sbin/ ====进入sbin目录
+
+
+   [root@izbp18vj2il5r9jah4nbbcz sbin]#  ./nginx -s reload =====重启Nginx服务器
+
+
+
+
+
+
+
+
+
+
